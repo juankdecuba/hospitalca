@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Especialista</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        :root {
+            --primary-color: #0e8030;
+            --secondary-color: #004d40;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --white: #ffffff;
+        }
+
+        /* General */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 15px;
+            text-align: center;
+        }
+
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        header nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .register-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .register-container h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .register-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .register-container input,
+        .register-container select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .register-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .register-container button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .register-container .login-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .register-container .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .register-container .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 15px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'administrador' %}">Inicio</a></li>
+                <li><a href="{% url 'gestionar_especialistas' %}">Especialistas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="register-container">
+            <h1>Registrar Especialista</h1>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <small style="color: red;">{{ field.errors|join:", " }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit">Registrar</button>
+            </form>
+            <div class="login-link">
+                <p><a href="{% url 'administrador' %}">Regresar al panel de administración</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

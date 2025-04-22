@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Blog</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'administrador' %}">Inicio</a></li>
+                <li><a href="{% url 'gestionar_blog' %}">Blog</a></li>
+                <li><a href="#" onclick="logout()">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section id="crear-blog">
+            <h2>Adicionar Blog</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label for="titulo">Título:</label>
+                <input type="text" name="titulo" id="titulo" required>
+        
+                <label for="resumen">Resumen:</label>
+                <textarea name="resumen" id="resumen" required></textarea>
+        
+                <label for="contenido">Contenido Completo:</label>
+                <textarea name="contenido" id="contenido" required></textarea>
+        
+                <label for="imagen">Imagen del Blog:</label>
+                <input type="file" name="imagen" id="imagen" accept="image/*">
+        
+                <button type="submit" class="btn">Guardar Blog</button>
+            </form>
+        </section>        
+    </main>
+</body>
+</html>

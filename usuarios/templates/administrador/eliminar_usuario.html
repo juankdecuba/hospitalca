@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eliminar Usuario</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'gestionar_usuarios' %}">Volver a Usuarios</a></li>
+                <li><a href="{% url 'administrador' %}">Inicio</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>Eliminar Usuario</h2>
+        <p>⚠️ **Estás a punto de eliminar el usuario** <strong>{{ usuario.username }}</strong>. Esta acción es irreversible.</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-delete">Confirmar Eliminación</button>
+            <a href="{% url 'gestionar_usuarios' %}" class="btn">Cancelar</a>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

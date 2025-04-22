@@ -1,0 +1,200 @@
+<!-- filepath: c:\Users\JUANK\Documents\myproject\usuarios\templates\administrador\añadir_disponibilidad.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Añadir Disponibilidad</title>
+    <style>
+        :root {
+            --primary-color: #0e8030;
+            --secondary-color: #004d40;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --white: #ffffff;
+        }
+
+        /* General */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        header nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .container h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .container label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .container input,
+        .container select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .container button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .container button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 15px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'administrador' %}">Inicio</a></li>
+                <li><a href="{% url 'gestionar_disponibilidad' %}">Disponibilidad</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2>Añadir Disponibilidad</h2>
+
+            <!-- Mostrar mensajes de éxito o error -->
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                
+                <!-- Campo para seleccionar especialista -->
+                <label for="especialista">Especialista:</label>
+                <select id="especialista" name="especialista" required>
+                    <option value="">-- Seleccionar Especialista --</option>
+                    {% for especialista in especialistas %}
+                        <option value="{{ especialista.id }}">{{ especialista.username }}</option>
+                    {% endfor %}
+                </select>
+            
+                <label for="fecha">Fecha:</label>
+                <input type="date" id="fecha" name="fecha" required>
+            
+                <label for="hora_inicio">Hora Inicio:</label>
+                <input type="time" id="hora_inicio" name="hora_inicio" required>
+            
+                <label for="hora_fin">Hora Fin:</label>
+                <input type="time" id="hora_fin" name="hora_fin" required>
+            
+                <label for="disponible">Disponible:</label>
+                <input type="checkbox" id="disponible" name="disponible" checked>
+            
+                <button type="submit">Guardar</button>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

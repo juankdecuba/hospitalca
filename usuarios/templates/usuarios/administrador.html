@@ -1,0 +1,287 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="icon" href="{% static 'img/icono.jpg' %}" type="image/x-icon">
+    <style>
+        :root {
+            --primary-color: #0e8030;
+            --secondary-color: #004d40;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --white: #ffffff;
+        }
+
+        /* General */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        header nav ul li {
+            margin: 0;
+        }
+
+        header nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            background-color: var(--secondary-color);
+            color: var(--white);
+        }
+
+        .container {
+            flex: 1;
+            padding: 20px;
+            margin: 20px; 
+            max-width: 100%;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: space-between; /* Espacio entre tarjetas */
+            flex-wrap: nowrap; /* Evita que las tarjetas se muevan a otra fila */
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 20px;
+            flex: 1 1 calc(25% - 20px); /* Ocupa el 25% del ancho menos el espacio del gap */
+            max-width: calc(25% - 20px); /* Máximo ancho para mantener el diseño */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .card img {
+            width: 180px; /* Imagen más grande */
+            height: 180px;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem; /* Texto más grande */
+        }
+
+        .card a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .stat {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 20px;
+            width: 200px;
+            position: relative;
+        }
+    
+        .stat-bar {
+            width: 30px;
+            height: 150px; /* Altura máxima de la barra */
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 10px auto;
+            position: relative;
+            overflow: hidden;
+        }
+    
+        .bar {
+            width: 100%;
+            border-radius: 5px;
+            position: absolute;
+            bottom: 0;
+            transition: height 0.3s ease;
+        }
+    
+        .stat h3 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+    
+        .stat p {
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1px;
+            {% comment %} position: fixed; {% endcomment %}
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <h1>Panel de Administración</h1>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="logout()">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenedor de Tarjetas -->
+    <div class="container">
+        <h2>Gestiona tu Sistema</h2>
+        <div class="card-container">
+            <div class="card">
+                <a href="{% url 'gestionar_usuarios' %}">
+                    <img src="{% static 'img/avatar.png' %}" alt="Usuarios">
+                    <h3>Usuarios</h3>
+                </a>
+            </div>
+            <div class="card">
+                <a href="{% url 'gestionar_especialistas' %}">
+                    <img src= "{% static 'img/avatar.png' %}" alt="Especialistas">
+                    <h3>Especialistas</h3>
+                </a>
+            </div>
+            <div class="card">
+                <a href="{% url 'gestionar_citas_admin' %}">
+                    <img src= "{% static 'img/avatar.png' %}" alt="Citas">
+                    <h3>Citas</h3>
+                </a>
+            </div>
+            <div class="card">
+                <a href="{% url 'gestionar_blog' %}">
+                    <img src= "{% static 'img/avatar.png' %}" alt="Blog">
+                    <h3>Blog</h3>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor de Resumen del Sistema -->
+    <!-- Contenedor de Resumen del Sistema -->
+<div class="container">
+    <h2>Estadísticas</h2>
+    <div class="stats-container">
+        <div class="stat">
+            <h3>Usuarios</h3>
+            <div class="stat-bar">
+                <div class="bar" style="height: calc({{ usuarios_count }} / 120 * 150px); background-color: green;"></div> <!-- Barra verde -->
+            </div>
+            <p>{{ usuarios_count }} registrados</p>
+            <p>Usuarios registrados: {{ usuarios_count }}</p>
+        </div>
+        <div class="stat">
+            <h3>Especialistas</h3>
+            <div class="stat-bar">
+                <div class="bar" style="height: calc({{ especialistas_count }} / 120 * 150px); background-color: blue;"></div> <!-- Barra azul -->
+            </div>
+            <p>{{ especialistas_count }} disponibles</p>
+        </div>
+        <div class="stat">
+            <h3>Citas</h3>
+            <div class="stat-bar">
+                <div class="bar" style="height: calc({{ citas_count }} / 120 * 150px); background-color: yellow;"></div> <!-- Barra amarilla -->
+            </div>
+            <p>{{ citas_count }} pendientes</p>
+        </div>
+        <div class="stat">
+            <h3>Blogs</h3>
+            <div class="stat-bar">
+                <div class="bar" style="height: calc({{ blogs_count }} / 120 * 150px); background-color: red;"></div> <!-- Barra roja -->
+            </div>
+            <p>{{ blogs_count }} publicados</p>
+        </div>
+    </div>
+</div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Script -->
+    <script>
+        function logout() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{% url "logout" %}';
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}'; // Asegúrate de que esto esté disponible en el contexto
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</body>
+</html>

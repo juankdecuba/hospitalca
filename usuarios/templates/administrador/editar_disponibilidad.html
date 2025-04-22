@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Disponibilidad</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'gestionar_disponibilidad' %}">Volver a Disponibilidades</a></li>
+                <li><a href="{% url 'administrador' %}">Inicio</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2>Editar Disponibilidad</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <label for="fecha">Fecha:</label>
+                <input type="date" id="fecha" name="fecha" value="{{ disponibilidad.fecha }}" required>
+
+                <label for="hora_inicio">Hora Inicio:</label>
+                <input type="time" id="hora_inicio" name="hora_inicio" value="{{ disponibilidad.hora_inicio }}" required>
+
+                <label for="hora_fin">Hora Fin:</label>
+                <input type="time" id="hora_fin" name="hora_fin" value="{{ disponibilidad.hora_fin }}" required>
+
+                <label for="disponible">Disponible:</label>
+                <input type="checkbox" id="disponible" name="disponible" {% if disponibilidad.disponible %}checked{% endif %}>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn">Guardar Cambios</button>
+                    <a href="{% url 'gestionar_disponibilidad' %}" class="btn btn-delete">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

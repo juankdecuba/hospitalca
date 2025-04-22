@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/icono.jpg' %}" type="image/x-icon">
+    <title>Registro de Usuario</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .register-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .register-container h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        .register-container input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .register-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .register-container button:hover {
+            background-color: #218838;
+        }
+        .register-container .login-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .register-container .login-link a {
+            color: #28a745;
+            text-decoration: none;
+        }
+        .register-container .login-link a:hover {
+            text-decoration: underline;
+        }
+        .register-container .error-message {
+            color: #dc3545;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h1>Registro de Usuario</h1>
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" id="username" name="username" placeholder="Nombre de usuario" required>
+            <input type="password" id="password" name="password" placeholder="Contraseña" required>
+            <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
+            <button type="submit">Registrarse</button>
+        </form>
+        <div class="login-link">
+            ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a>
+        </div>
+    </div>
+</body>
+</html>

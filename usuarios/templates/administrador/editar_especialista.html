@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Especialista</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #0e8030;
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: #004d40;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 80px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #0e8030;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        form input:focus, form select:focus {
+            outline: 2px solid #0e8030;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            background-color: #0e8030;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #004d40;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        footer {
+            background-color: #0e8030;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'gestionar_especialistas' %}">Volver a Especialistas</a></li>
+                <li><a href="{% url 'administrador' %}">Inicio</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>Editar Especialista</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="username">Nombre:</label>
+            <input type="text" id="username" name="username" value="{{ especialista.username }}" required>
+
+            <label for="email">Correo Electrónico:</label>
+            <input type="email" id="email" name="email" value="{{ especialista.email }}" required>
+
+            <label for="especialidad">Especialidad:</label>
+            <select id="especialidad" name="especialidad" required>
+                {% for esp in especialidades %}
+                <option value="{{ esp.id }}" {% if esp.id == especialista.especialidad.id %}selected{% endif %}>{{ esp.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn">Guardar Cambios</button>
+            <a href="{% url 'gestionar_especialistas' %}" class="btn btn-delete">Cancelar</a>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

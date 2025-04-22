@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/icono.jpg' %}" type="image/x-icon">
+    <title>Hospital Provincial General Docente Dr. Antonio Luaces Iraola</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+                <ul>
+                    <li><a href="{% url 'usuario' %}">Inicio</a></li>
+                </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="survey">
+            <h3>Encuestas de Satisfacción</h3>
+            <p>Ayúdanos a mejorar nuestros servicios completando una breve encuesta después de tu cita médica.</p>
+            <form id="survey-form" method="post" action="{% url 'agregar_testimonio' %}">
+                {% csrf_token %}
+                <label for="experience">Tu experiencia:</label>
+                <select id="experience" name="experiencia" required>
+                    <option value="excelente">Excelente</option>
+                    <option value="buena">Buena</option>
+                    <option value="regular">Regular</option>
+                    <option value="mala">Mala</option>
+                </select>
+    
+                <label for="comments">Comentario:</label>
+                <textarea id="comments" name="comentario" rows="4" placeholder="Escribe tu testimonio aquí..." required></textarea>
+    
+                <button type="submit" class="btn">Enviar Encuesta</button>
+            </form>
+        </div>
+    </main>
+    
+
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+    
+</body>
+</html>

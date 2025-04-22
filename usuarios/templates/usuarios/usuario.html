@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hospital Provincial General Docente Dr. Antonio Luaces Iraola - Cuidamos de tu salud con atención médica de calidad.">
+    <meta name="keywords" content="hospital, salud, Ciego de Ávila, médico, citas en línea">
+    <link rel="icon" href="{% static 'img/icono.jpg' %}" type="image/x-icon">
+    <title>Hospital Provincial General Docente Dr. Antonio Luaces Iraola</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+ 
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="{% url 'usuario' %}">Inicio</a></li>
+            <li><a href="{% url 'reservar_cita' %}">Reservar</a></li>
+            <li><a href="#footer-contact">Contactos</a></li>
+            <li><a href="{% url 'profile' %}">Perfil</a></li>
+            <li>
+                <a href="{% url 'mensajes_recibidos' %}" style="position: relative;">
+                    Mensajes
+                    {% if mensajes_no_leidos > 0 %}
+                        <span style="
+                            position: absolute;
+                            top: -5px;
+                            right: -10px;
+                            background-color: red;
+                            color: white;
+                            border-radius: 50%;
+                            padding: 2px 6px;
+                            font-size: 12px;
+                            font-weight: bold;
+                        ">
+                            {{ mensajes_no_leidos }}
+                        </span>
+                    {% endif %}
+                </a>
+            </li>
+            <li><a href="#" onclick="logout()">Cerrar Sesión</a></li>
+            
+        </ul>
+    </nav>
+</header>
+
+<main>
+<div class="overlay">
+  <img src="{% static 'img/header.jpg' %}" alt="Foto principal del hospital" class="photo1">
+</div>
+
+<section id="quick-access" class="fade-in">
+    <div class="access-container">
+      <h2 class="access-title">Acceso rápido a servicios médicos</h2>
+      <p class="access-subtitle">Gestiona tu salud de manera eficiente con nuestro sistema integrado</p>
+      <div class="button-container">
+        <a href="{% url 'reservar_cita' %}" class="btn btn-center">Reservar</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="blog">
+      <div class="container">
+          <h2>Últimos Blogs de Salud</h2>
+          <div class="blog-posts">
+              {% for blog in blogs %}
+              <div class="blog-post fade-in">
+                  <div class="blog-image">
+                      {% if blog.imagen %}
+                          <img src="{{ blog.imagen.url }}" alt="{{ blog.titulo }}" class="blog-img">
+                      {% endif %}
+                  </div>
+                  <div class="blog-content">
+                      <h3>{{ blog.titulo }}</h3>
+                      <p class="blog-meta">Publicado el {{ blog.fecha_publicacion|date:"d \d\e F \d\e Y" }}</p>
+                      <p class="blog-description">{{ blog.resumen }}</p>
+                      <a href="{% url 'blog_detalle' blog.id %}" class="btn">Leer Más</a>
+                  </div>
+              </div>
+              {% empty %}
+              <p class="no-blogs">No hay artículos disponibles en este momento.</p>
+              {% endfor %}
+          </div>
+      </div>
+  </section>
+  
+
+  <section id="testimonials" class="fade-in">
+    <h2>Testimonios de nuestros pacientes</h2>
+    <div class="testimonials-container">
+        {% for testimonio in testimonios %}
+        <div class="testimonial">
+            <div class="testimonial-image">
+                {% if testimonio.usuario.profile_picture %}
+                    <img src="{{ testimonio.usuario.profile_picture.url }}" alt="Foto de perfil de {{ testimonio.usuario.username }}">
+                {% else %}
+                    <img src="{% static 'img/avatar.png' %}" alt="Foto de perfil de {{ testimonio.usuario.username }}">
+                {% endif %}
+            </div>
+            <strong>{{ testimonio.usuario__username }}</strong>
+            <p><strong>Experiencia:</strong> {{ testimonio.experiencia }}</p>
+            <p><strong>Comentario:</strong> {{ testimonio.comentario }}</p>
+            {% comment %} <p class="testimonial-date">Publicado el {{ testimonio.fecha_publicacion|date:"d M Y" }}</p> {% endcomment %}
+        </div>
+        {% empty %}
+        <p class="no-testimonials">No hay testimonios disponibles en este momento.</p>
+        {% endfor %}
+    </div>
+    <a href="{% url 'agregar_testimonio' %}" class="btn">Opinar</a>
+</section>
+    
+</main>
+<footer>
+    <h2>Indicaciones y Mapa del Hospital</h2>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3463.806692481853!2d-78.75260267484741!3d21.84124954661591!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88cd45bcb6bd22eb%3A0x123456789abcdef!2sHospital%20Provincial%20General%20Docente%20Dr.%20Antonio%20Luaces%20Iraola!5e0!3m2!1ses!2scu!4v1712345678901!5m2!1ses!2scu"> </iframe>
+    <div class="footer-columns">
+        <div id="footer-contact">
+            <p>Hospital Provincial General Docente Dr. Antonio Luaces Iraola Ciego de Ávila</p>
+            <p>Calle Máximo Gómez No.257, Cuba</p>
+            <p>+53 33 224015</p>
+        </div>
+        <div class="footer-links">
+            <nav>
+                <ul>
+                    <li>
+                        <a href="https://www.facebook.com/hospitalciego/" title="Facebook" class="icons"target="_blank">
+                            <img src="{% static 'img/fb.png' %}" alt="Facebook">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.instagram.com/hospitalciego/" title="Instagram" class="icons"target="_blank">
+                            <img src="{% static 'img/instagram.png' %}" alt="Instagram">
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</footer>
+<section id="footer-section">
+    <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+</section>
+<button onclick="scrollToTop()" id="scrollToTopBtn" title="Volver al inicio">⬆️</button>
+<script src="{% static 'js/scripts.js' %}"></script>
+<script>
+function logout() {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{% url "logout" %}';
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = 'csrfmiddlewaretoken';
+    csrfToken.value = '{{ csrf_token }}'; // Asegúrate de que esto esté disponible en el contexto
+    form.appendChild(csrfToken);
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
+</body>
+</html>

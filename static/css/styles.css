@@ -1,0 +1,682 @@
+:root {
+  --primary-color: #0e8030;
+  --secondary-color: #004d40;
+  --background-color: #f4f4f4;
+  --text-color: #333;
+  --white: #ffffff;
+  --black: #000000;
+}
+
+:root {
+  --primary-color: #0e8030; /* Verde corporativo */
+  --secondary-color: #005024; /* Verde más oscuro */
+  --background-color: #f8f9fa; /* Fondo más claro */
+  --text-color: #333;
+  --white: #ffffff;
+  --black: #000000;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: var(--text-color);
+}
+
+header {
+  position: fixed; /* Fija la barra en la parte superior */
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--primary-color); /* Aplica el verde corporativo */
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Asegura que esté encima de otros elementos */
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 1.5rem;
+}
+
+nav ul li {
+  display: inline;
+}
+
+nav ul li a {
+  color: var(--white); /* Texto en blanco */
+  text-decoration: none;
+  border-radius: 5px;
+  padding: 0.75rem 1rem;
+  transition: background 0.3s ease;
+  font-size: 1.2rem;
+}
+
+nav ul li a:hover {
+  background-color: var(--secondary-color); /* Color más oscuro al pasar el mouse */
+}
+
+.container {
+  max-width: 100%;
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+main {
+  margin-top: 6rem; /* Añade espacio para que el contenido no se superponga con la barra fija */
+}
+
+.overlay {
+  position: relative;
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: var(--black); 
+}
+
+.btn {
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  align-self: flex-end; /* Alinea el botón a la derecha */
+  margin-top: auto; /* Empuja el botón hacia abajo */
+}
+
+.btnok:hover {
+  background-color: var(--secondary-color);
+}
+
+h2 {
+  /* color: var(--black); */
+  text-align: center;
+  margin-left: 50px;
+}
+
+form {
+  background-color: var(--white);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  margin: 2rem auto;
+}
+
+form input,
+form select,
+#survey-form select,
+#survey-form textarea {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+form button,
+#survey-form button {
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+form button:hover,
+#survey-form button:hover {
+  background-color: var(--secondary-color);
+}
+#survey {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  width: 100%;
+  background-color: #f8f9fa; /* Color de fondo opcional */
+}
+
+#blog {
+  padding: 4rem 2rem;
+  background-color: var(--white);
+}
+
+.blog-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.blog-header h2 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.blog-header .blog-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-color);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.blog-posts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.blog-post {
+  background-color: var(--white);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: calc(45% - 2rem); /* Aumentamos el ancho de las tarjetas */
+  display: flex;
+  flex-direction: column;
+}
+
+.blog-post:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.blog-image {
+  overflow: hidden;
+}
+
+.blog-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.blog-post:hover .blog-img {
+  transform: scale(1.1);
+}
+
+.blog-content {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.blog-description {
+  flex: 1; /* Hace que la descripción ocupe el espacio disponible */
+  margin-bottom: 1.5rem;
+}
+
+.blog-content h3 {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.blog-meta {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.blog-description {
+  font-size: 1rem;
+  color: var(--text-color);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.photo1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60vh; /* Puedes ajustar la altura según sea necesario */
+  object-fit: cover;
+  z-index: -1; /* Envía la imagen al fondo */
+}
+footer {
+  background-color: var(--secondary-color);
+  color: var(--white);
+  text-align: center;
+  padding: 2rem;
+  margin-top: auto;
+}
+
+footer iframe {
+  width: 100%;
+  max-width: 900px;
+  height: 300px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#footer-section {
+  background-color: var(--secondary-color);
+  color: var(--white);
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  font-family: 'Arial', sans-serif;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#footer-section p {
+  margin: 0;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+#footer-section:hover p {
+  opacity: 1;
+}
+
+#icons {
+  height: 50px;
+  width: 50px;
+  cursor: pointer;
+}
+
+#scrollToTopBtn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #578a66;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#scrollToTopBtn:hover {
+  background-color: var(--secondary-color);
+  transform: scale(1.1);
+}
+
+#scrollToTopBtn:active {
+  transform: scale(0.9);
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .blog-post {
+    width: calc(50% - 2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .blog-post {
+    width: 100%;
+  }
+
+  .blog-post p {
+    max-height: 80px;
+  }
+}
+
+/* Estilos para los testimonios */
+#testimonials {
+  padding: 4rem 2rem;
+  background-color: var(--white);
+  text-align: center;
+  position: relative; /* Para posicionar el botón correctamente */
+}
+
+#testimonials h2 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+}
+
+.testimonials-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 2rem; /* Aumentamos el espacio entre testimonios */
+  flex-wrap: nowrap; /* Para que los testimonios no se envuelvan a la siguiente línea */
+}
+.testimonial {
+  background-color: var(--white);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  width: 30%; /* Ajustar según sea necesario */
+  min-width: 250px; /* Asegura que no se compriman demasiado */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.testimonial:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.testimonial-image img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
+
+.testimonial p {
+  font-size: 1rem;
+  color: var(--text-color);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.testimonial strong {
+  font-size: 1.1rem;
+  color: var(--primary-color);
+}
+#testimonials .btn {
+  margin-top: 2rem; /* Espacio arriba del botón */
+  display: inline-block; /* Para que no ocupe todo el ancho */
+}
+@media (max-width: 768px) {
+  .testimonial {
+    width: 45%; /* Ajustar según sea necesario para pantallas medianas */
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonial {
+    width: 100%;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#reservation {
+  background-color: var(--white);
+  text-align: center;
+}
+
+#reservation h2 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+}
+
+#reservation-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+#reservation-form label {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+#reservation-form select,
+#reservation-form input,
+#reservation-form textarea {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+#reservation-form textarea {
+  height: 100px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#reservation-form button {
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#reservation-form button.cancel {
+  background-color: #d9534f; /* Color rojo para el botón de cancelar */
+}
+
+#reservation-form button:hover {
+  background-color: var(--secondary-color);
+}
+
+#reservation-form button.cancel:hover {
+  background-color: #c9302c; /* Color más oscuro para el botón de cancelar en hover */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#quick-access {
+  background-color: var(--white);
+  text-align: center;
+  position: relative;
+}
+
+.access-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.access-title {
+  color: var(--primary-color);
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.access-subtitle {
+  color: var(--text-color);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+}
+
+/* Contenedor del botón para centrado exacto */
+.button-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-center {
+  padding: 0.9rem 2.5rem;
+  font-size: 1.1rem;
+  border-radius: 4px;
+  display: inline-block; /* Mantiene el ancho automático */
+}
+
+/* Efecto hover consistente con tu diseño */
+.btn-center:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14, 128, 48, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .access-title {
+    font-size: 1.8rem;
+  }
+  
+  .access-subtitle {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Estilos para botones de acciones */
+
+.btn-cancel {
+  background-color: #f44336;
+}
+
+.btn-cancel:hover {
+  background-color:rgb(171, 13, 29);
+  opacity: 0.8;
+}
+
+/* Estilos para la tabla de citas */
+.appointments table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.appointments th, .appointments td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.appointments th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.appointments tr:hover {
+  background-color: #f5f5f5;
+}
+
+
+
+
+
+.testimonials {
+  background-color: #e0f2f1;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}

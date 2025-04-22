@@ -1,0 +1,282 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Usuarios</title>
+    <style>
+        :root {
+            --primary-color: #0e8030;
+            --secondary-color: #004d40;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --white: #ffffff;
+        }
+
+        /* General */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: #0e8030;
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        header nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px; /* Ajusta el espacio interno del nav */
+        }
+
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        header nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .search-bar {
+            margin-left: 0; /* Elimina el margen izquierdo */
+            margin-right: 15px; /* Añade un pequeño margen derecho */
+            display: flex; /* Asegura que el buscador esté alineado correctamente */
+            justify-content: flex-end; /* Alinea el buscador a la derecha */
+        }
+    
+        .search-bar input {
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            width: 100%; /* Ajusta el ancho para que sea más responsivo */
+            max-width: 300px; /* Limita el ancho máximo */
+        }
+    
+        .search-bar input:focus {
+            outline: 2px solid var(--secondary-color);
+        }
+
+        .container {
+            padding: 20px;
+            margin: 80px auto; /* Ajusta el margen superior para compensar el nav fijo */
+            max-width: 100%;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .admin-table th {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-size: 1rem;
+        }
+
+        .admin-table td {
+            font-size: 0.9rem;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            text-decoration:none;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1px;
+            {% comment %} position: fixed; {% endcomment %}
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            header nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .admin-table th, .admin-table td {
+                font-size: 0.85rem;
+                padding: 10px;
+            }
+
+            .btn {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .admin-table th, .admin-table td {
+                font-size: 0.8rem;
+                padding: 8px;
+            }
+
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'administrador' %}">Inicio</a></li>
+                <li><a href="{% url 'register' %}">Adicionar Usuario</a></li> 
+                <li><a href="{% url 'gestionar_testimonios' %}">Testimonios</a></li>
+                
+            </ul>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre..." onkeyup="buscarUsuario()">
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2>Lista de Usuarios</h2>
+            <table class="admin-table" id="usuariosTable">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Fecha de Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                    <tr>
+                        <td>{{ usuario.username }}</td>
+                        <td>{{ usuario.email }}</td>
+                        <td>{{ usuario.date_joined|date:"d/m/Y" }}</td>
+                        <td>
+                            <div class="btn-container">
+                                <a href="{% url 'editar_usuario' usuario.id %}" class="btn">Editar</a>
+                                <a href="{% url 'eliminar_usuario' usuario.id %}" class="btn btn-delete">Eliminar</a>
+                            </div>
+                        </td>
+                        
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No hay usuarios registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+    <script>
+        // Función para buscar usuarios por nombre
+        function buscarUsuario() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById("usuariosTable");
+            const rows = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < rows.length; i++) {
+                const nombre = rows[i].getElementsByTagName("td")[0];
+                if (nombre) {
+                    const textValue = nombre.textContent || nombre.innerText;
+                    if (textValue.toLowerCase().indexOf(filter) > -1) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

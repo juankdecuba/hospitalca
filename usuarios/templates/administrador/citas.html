@@ -1,0 +1,328 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Citas</title>
+    <style>
+        :root {
+            --primary-color: #0e8030;
+            --secondary-color: #004d40;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --white: #ffffff;
+        }
+
+        /* General */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        header nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px; /* Ajusta el espacio interno del nav */
+        }
+    
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+    
+        header nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+    
+        header nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+    
+        .search-bar {
+            margin-left: auto; /* Alinea la barra de búsqueda a la derecha */
+            margin-right: 20px; /* Ajusta el margen derecho para moverla hacia dentro */
+        }
+    
+        .search-bar input {
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            max-width: 300px; /* Limita el ancho máximo */
+        }
+    
+        .search-bar input:focus {
+            outline: 2px solid var(--secondary-color);
+        }
+
+        .container {
+            padding: 20px;
+            margin: 80px auto; /* Ajusta el margen superior para compensar el nav fijo */
+            max-width: 100%;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .admin-table th {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .admin-table td {
+            font-size: 0.9rem;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* Espacio entre botones */
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            text-decoration:none;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-cancel {
+            background-color: #dc3545; /* Rojo para rechazar */
+        }
+
+        .btn-cancel:hover {
+            background-color: #c82333;
+        }
+
+        .rechazo-container {
+            display: none; /* Ocultar por defecto */
+            margin-top: 10px;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1px;
+            text-align: center;
+            {% comment %} position: fixed; {% endcomment %}
+            bottom: 0;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            header nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .admin-table th, .admin-table td {
+                font-size: 0.85rem;
+                padding: 10px;
+            }
+
+            .btn {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'administrador' %}">Inicio</a></li>
+                <li><a href="{% url 'registrar_cita' %}">Adicionar Citas</a></li>
+            </ul>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Buscar" onkeyup="buscarCita()">
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2>Lista de Citas</h2>
+            
+            <!-- Citas Pendientes -->
+            <h3>Citas Pendientes</h3>
+            <table class="admin-table" id="citasPendientesTable">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Especialista</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in citas_pendientes %}
+                    <tr>
+                        <td>{{ cita.usuario.username }}</td>
+                        <td>{{ cita.especialista.username }}</td>
+                        <td>{{ cita.fecha_hora|date:"Y-m-d" }}</td>
+                        <td>{{ cita.fecha_hora|time:"H:i" }}</td>
+                        <td>{{ cita.descripcion|default:"-" }}</td>
+                        <td>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="cita_id" value="{{ cita.id }}">
+                                <button type="submit" name="accion" value="aceptar" class="btn">Aceptar</button>
+
+                                <!-- Campo de motivo del rechazo -->
+                                <div class="rechazo-container">
+                                    <input type="text" name="motivo_rechazo" placeholder="Motivo del rechazo">
+                                </div>
+                                <button type="submit" name="accion" value="rechazar" class="btn btn-cancel" onclick="mostrarMotivo(this)">Rechazar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No hay citas pendientes.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Citas Aceptadas -->
+            <h3>Citas Aceptadas</h3>
+            <table class="admin-table" id="citasAceptadasTable">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Especialista</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in citas_aceptadas %}
+                    <tr>
+                        <td>{{ cita.usuario.username }}</td>
+                        <td>{{ cita.especialista.username }}</td>
+                        <td>{{ cita.fecha_hora|date:"Y-m-d" }}</td>
+                        <td>{{ cita.fecha_hora|time:"H:i" }}</td>
+                        <td>{{ cita.descripcion|default:"-" }}</td>
+                        <td>
+                            <a href="{% url 'editar_cita' cita.id %}" class="btn">Reprogramar</a>
+                            <a href="{% url 'cancelar_cita' cita.id %}" class="btn btn-cancel">Cancelar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No hay citas aceptadas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Citas Rechazadas -->
+            <h3>Citas Rechazadas</h3>
+            <table class="admin-table" id="citasRechazadasTable">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Especialista</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Motivo del Rechazo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in citas_rechazadas %}
+                    <tr>
+                        <td>{{ cita.usuario.username }}</td>
+                        <td>{{ cita.especialista.username }}</td>
+                        <td>{{ cita.fecha_hora|date:"Y-m-d" }}</td>
+                        <td>{{ cita.fecha_hora|time:"H:i" }}</td>
+                        <td>{{ cita.motivo_rechazo|default:"No especificado" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No hay citas rechazadas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+    <script>
+        // Función para buscar citas por nombre de paciente
+        function buscarCita() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const rows = document.querySelectorAll("#citasPendientesTable tbody tr, #citasAceptadasTable tbody tr, #citasRechazadasTable tbody tr");
+            rows.forEach(row => {
+                const paciente = row.querySelector("td:first-child");
+                row.style.display = paciente && paciente.textContent.toLowerCase().includes(input) ? "" : "none";
+            });
+        }
+
+        // Función para mostrar el campo de motivo del rechazo solo al rechazar
+        function mostrarMotivo(button) {
+            const form = button.closest("form");
+            const rechazoContainer = form.querySelector(".rechazo-container");
+            rechazoContainer.style.display = "block";
+
+            // Asegurarse de que el campo de motivo sea obligatorio solo al rechazar
+            const motivoInput = rechazoContainer.querySelector("input[name='motivo_rechazo']");
+            motivoInput.required = true;
+        }
+    </script>
+</body>
+</html>

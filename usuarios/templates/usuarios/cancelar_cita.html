@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/icono.jpg' %}" type="image/x-icon">
+    <title>Eliminar Cita</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .confirmation-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .confirmation-container h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        .confirmation-container p {
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #666;
+        }
+        .confirmation-container button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .confirmation-container .confirm {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        .confirmation-container .cancel {
+            background-color: #0e8030;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+              
+        .cancel:hover {
+            background-color:rgb(10, 81, 37);
+        }
+
+        .confirmation-container .confirm:hover {
+            background-color:rgb(171, 13, 29);
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <h1>Eliminar Cita</h1>
+        <p>¿Estás seguro de que deseas eliminar la cita con <strong>{{ cita.especialista }}</strong> el <strong>{{ cita.fecha_hora }}</strong>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="confirm">Eliminar</button>
+            <a href="{% url 'profile' %}" class="cancel">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>

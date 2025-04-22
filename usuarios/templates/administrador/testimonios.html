@@ -1,0 +1,217 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Opiniones</title>
+    <style>
+        :root {
+            --primary-color: #0e8030;
+            --secondary-color: #004d40;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --white: #ffffff;
+        }
+
+        /* General */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: #0e8030;
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        header nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px; /* Ajusta el espacio interno del nav */
+        }
+    
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+    
+        header nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+    
+        header nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+    
+        .search-bar {
+            margin-left: auto; /* Alinea la barra de búsqueda a la derecha */
+            margin-right: 20px; /* Ajusta el margen derecho para moverla hacia dentro */
+        }
+    
+        .search-bar input {
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            max-width: 300px; /* Limita el ancho máximo */
+        }
+    
+        .search-bar input:focus {
+            outline: 2px solid var(--secondary-color);
+        }
+
+        .container {
+            padding: 20px;
+            margin: 80px auto; /* Ajusta el margen superior para compensar el nav fijo */
+            max-width: 100%;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .admin-table th {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-size: 1rem;
+        }
+
+        .admin-table td {
+            font-size: 0.9rem;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            text-decoration:none;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'administrador' %}">Inicio</a></li>
+                <li><a href="{% url 'gestionar_usuarios' %}">Usuario</a></li>
+
+            </ul>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Buscar por paciente..." onkeyup="buscarTestimonio()">
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2>Lista de Testimonios</h2>
+            <table class="admin-table" id="testimoniosTable">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Experiencia</th>
+                        <th>Comentarios</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for testimonio in testimonios %}
+                    <tr>
+                        <td>{{ testimonio.usuario.username }}</td>
+                        <td>{{ testimonio.experiencia }}</td>
+                        <td>{{ testimonio.comentario|truncatechars:50 }}</td>
+                        <td>{{ testimonio.fecha_publicacion|date:"Y-m-d" }}</td>
+                        <td>
+                            <div class="btn-container">
+                                <a href="{% url 'aprobar_testimonio' testimonio.id %}" class="btn">Mostrar</a>
+                                <a href="{% url 'ocultar_testimonio' testimonio.id %}" class="btn btn-delete">No Mostrar</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No hay testimonios registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

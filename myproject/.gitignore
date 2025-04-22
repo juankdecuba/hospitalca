@@ -1,0 +1,17 @@
+# Ignorar el archivo .env
+.env
+
+# Ignorar archivos de migraciones de bases de datos
+*.pyc
+__pycache__/
+
+# Ignorar archivos de configuración de entornos virtuales
+venv/
+env/
+
+# Ignorar archivos de configuración de IDEs
+.vscode/
+.idea/
+
+# Ignorar archivos estáticos generados
+staticfiles/

@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/icono.jpg' %}" type="image/x-icon">
+    <title>Editar Cita - Hospital Provincial</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'profile' %}">Perfil</a></li>
+                {% comment %} <li><a href="{% url 'logout' %}">Cerrar Sesión</a></li> {% endcomment %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="edit-cita">
+            <h2>Editar Cita</h2>
+            <form method="post">
+                {% csrf_token %}
+                
+                <label for="especialidad">Especialidad:</label>
+                <select id="especialidad" name="especialidad" required>
+                    <option value="">-- Seleccionar Especialidad --</option>
+                    {% for especialidad in especialidades %}
+                    <option value="{{ especialidad.id }}" {% if cita.especialidad.id == especialidad.id %}selected{% endif %}>
+                        {{ especialidad.nombre }}
+                    </option>
+                    {% endfor %}
+                </select>
+            
+                <label for="especialista">Especialista:</label>
+                <select id="especialista" name="especialista" required>
+                    <option value="">-- Seleccionar Especialista --</option>
+                    {% for especialista in especialistas %}
+                    {% if especialista.especialidad_id == cita.especialidad.id %}
+                    <option value="{{ especialista.id }}" {% if cita.especialista.id == especialista.id %}selected{% endif %}>
+                        {{ especialista.username }}
+                    </option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            
+                <label for="fecha_hora">Fecha y Hora:</label>
+                <input type="datetime-local" id="fecha_hora" name="fecha_hora" value="{{ cita.fecha_hora|date:'Y-m-d\TH:i' }}" required>
+            
+                <label for="descripcion">Motivo de Reprogramación:</label>
+                <textarea id="descripcion" name="descripcion" rows="4">{{ cita.descripcion }}</textarea>
+            
+                <!-- 🔹 Campo oculto para marcar la cita como 'pendiente' -->
+                <input type="hidden" name="estado" value="pendiente">
+            
+                <button type="submit" class="btn">Guardar Cambios</button>
+                <button type="button" class="btn-cancel" onclick="window.history.back()">Cancelar</button>
+            </form>
+            
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+
+    {% comment %} <script src="{% static 'scripts.js' %}"></script> {% endcomment %}
+    
+    <!-- Script para actualizar especialistas según especialidad -->
+    <script>
+        document.getElementById('especialidad').addEventListener('change', function() {
+            const especialidadId = this.value;
+            fetch(`/get_especialistas/${especialidadId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('especialista');
+                    select.innerHTML = '';
+                    data.forEach(especialista => {
+                        const option = document.createElement('option');
+                        option.value = especialista.id;
+                        option.textContent = especialista.username;
+                        select.appendChild(option);
+                    });
+                });
+        });
+        document.getElementById('especialidad').addEventListener('change', function() {
+            const especialidadId = this.value; // ID de la especialidad seleccionada
+            const especialistaSelect = document.getElementById('especialista'); // Campo de especialistas
+    
+            // Limpia las opciones actuales del campo de especialistas
+            especialistaSelect.innerHTML = '<option value="">-- Selecciona un especialista --</option>';
+    
+            if (especialidadId) {
+                const especialistas = JSON.parse('{{ especialistas|safe }}'.replace(/&quot;/g, '"')); // Obtén especialistas
+                const especialistasFiltrados = especialistas.filter(especialista => especialista.especialidad_id == especialidadId);
+    
+                if (especialistasFiltrados.length > 0) {
+                    // Añade las opciones filtradas al select de especialistas
+                    especialistasFiltrados.forEach(especialista => {
+                        const option = document.createElement('option');
+                        option.value = especialista.id;
+                        option.textContent = especialista.username;
+                        especialistaSelect.appendChild(option);
+                    });
+                } else {
+                    // Si no hay especialistas, muestra un mensaje indicándolo
+                    especialistaSelect.innerHTML = '<option value="">No hay especialistas disponibles</option>';
+                }
+    
+                especialistaSelect.disabled = false; // Habilita el campo
+            } else {
+                especialistaSelect.disabled = true; // Deshabilita si no hay especialidad seleccionada
+            }
+        });
+    </script>
+</body>
+</html>

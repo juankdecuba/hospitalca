@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del Especialista</title>
+    <link rel="icon" href="{% static 'img/icono.jpg' %}" type="image/x-icon">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/styles.css' %}"> {% endcomment %}
+    <style>
+        :root {
+            --primary-color: #0e8030;
+            --secondary-color: #004d40;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --white: #ffffff;
+        }
+
+        /* General */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        header nav ul li {
+            margin: 0;
+        }
+
+        header nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            background-color: var(--secondary-color);
+            color: var(--white);
+        }
+
+        .container {
+            flex: 1;
+            padding: 20px;
+            {% comment %} margin: 20px auto; {% endcomment %}
+            max-width: 1400px;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        table th, table td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        table th {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-size: 1rem;
+        }
+
+        table td {
+            font-size: 0.9rem;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 15px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <h1>Panel del Especialista</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'usuario' %}">Inicio</a></li>
+                <li><a href="#" onclick="logout()">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal -->
+    <div class="container">
+        <h3>Datos del Especialista</h3>
+        <p><strong>Nombre:</strong> {{ especialista.username }}</p>
+        {% if especialista.especialidad %}
+        <p><strong>Especialidad:</strong> {{ especialista.especialidad.nombre }}</p>
+        {% endif %}
+
+        <h3>Citas Programadas:</h3>
+        <table class="citas-table">
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                <tr>
+                    <td>{{ cita.usuario.username }}</td>
+                    <td>{{ cita.fecha_hora|date:"Y-m-d" }}</td>
+                    <td>{{ cita.fecha_hora|time:"H:i" }}</td>
+                    <td>{{ cita.descripcion|default:"-" }}</td>
+                    <td>
+                        <button class="btn" onclick="verDescripcion('{{ cita.descripcion|escapejs }}')">Ver Descripción</button>
+                        <a href="{% url 'usuario' %}" class="btn btn-contact">Contactar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No tienes citas programadas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Script -->
+    <script>
+        function verDescripcion(descripcion) {
+            alert("Descripción de la cita: " + (descripcion || "Sin descripción disponible."));
+        }
+        function logout() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{% url "logout" %}';
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</body>
+</html>

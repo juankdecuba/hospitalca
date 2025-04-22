@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ blog.titulo }}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'usuario' %}">Inicio</a></li>
+                <li><a href="{% url 'reservar_cita' %}">Reservar Turno</a></li>
+                <li><a href="{% url 'mensajes_recibidos' %}">Mensajes</a></li>
+                <li><a href="#" onclick="logout()">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>{{ blog.titulo }}</h1>
+        <p><strong>Fecha:</strong> {{ blog.fecha_publicacion }}</p>
+        <article>
+            <p>{{ blog.contenido }}</p>
+        </article>
+    </main>
+    <div class="blog-content">
+        <h1>{{ blog.titulo }}</h1>
+        <p><strong>Fecha:</strong> {{ blog.fecha_publicacion }}</p>
+        
+        {% if blog.imagen %}
+        <img src="{{ blog.imagen.url }}" alt="{{ blog.titulo }}" class="blog-image">
+        {% endif %}
+    
+    
+        <article>
+            <p>{{ blog.contenido }}</p>
+        </article>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

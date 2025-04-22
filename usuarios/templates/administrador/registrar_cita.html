@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Registrar una cita médica en el Hospital Provincial General Docente Dr. Antonio Luaces Iraola.">
+    <meta name="keywords" content="hospital, salud, cita médica, registro de citas, Ciego de Ávila">
+    <title>Registrar Cita - Hospital Provincial</title>
+    <link rel="icon" href="{% static 'img/icono.jpg' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<style>
+    .messages {
+        margin-bottom: 20px;
+    }
+    .alert {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+</style>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'administrador' %}">Inicio</a></li>
+                <li><a href="{% url 'gestionar_citas_admin' %}">Citas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="reservation">
+            <h2>Registrar Cita</h2>
+    
+            <!-- Mostrar mensajes de éxito o error -->
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+    
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Campo para seleccionar usuario -->
+                <label for="usuario">Usuario:</label>
+                <select id="usuario" name="usuario" required>
+                    <option value="">-- Seleccionar Usuario --</option>
+                    {% for usuario in usuarios %}
+                        <option value="{{ usuario.id }}">{{ usuario.username }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Campo para seleccionar especialidad -->
+                <label for="especialidad">Especialidad:</label>
+                <select id="especialidad" name="especialidad" required onchange="filtrarEspecialistas()">
+                    <option value="">-- Seleccionar Especialidad --</option>
+                    {% for especialidad in especialidades %}
+                        <option value="{{ especialidad.id }}">{{ especialidad.nombre }}</option>
+                    {% endfor %}
+                </select>
+    
+                <!-- Campo para seleccionar especialista -->
+                <label for="especialista">Especialista:</label>
+                <select id="especialista" name="especialista" required disabled onchange="filtrarDisponibilidad()">
+                    <option value="">-- Selecciona una especialidad primero --</option>
+                </select>
+    
+                <!-- Campo para seleccionar disponibilidad -->
+                <label for="disponibilidad">Disponibilidad:</label>
+                <select id="disponibilidad" name="disponibilidad" required disabled>
+                    <option value="">-- Selecciona un especialista primero --</option>
+                </select>
+    
+                <!-- Campo para descripción -->
+                <label for="descripcion">Descripción del problema:</label>
+                <textarea id="descripcion" name="descripcion" rows="4" class="form-control"></textarea>
+    
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn">Registrar</button>
+                    <button type="button" class="btn btn-cancel" onclick="window.history.back()">Cancelar</button>
+                </div>
+            </form>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        function filtrarEspecialistas() {
+            const especialidadId = document.getElementById('especialidad').value;
+            const especialistaSelect = document.getElementById('especialista');
+            const disponibilidadSelect = document.getElementById('disponibilidad');
+    
+            // Limpia las opciones actuales
+            especialistaSelect.innerHTML = '<option value="">-- Selecciona una especialidad primero --</option>';
+            disponibilidadSelect.innerHTML = '<option value="">-- Selecciona un especialista primero --</option>';
+            especialistaSelect.disabled = true;
+            disponibilidadSelect.disabled = true;
+    
+            if (especialidadId) {
+                // Realiza una solicitud AJAX para obtener los especialistas
+                fetch(`/get_especialistas/${especialidadId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Agrega las opciones al campo de especialistas
+                        data.forEach(especialista => {
+                            const option = document.createElement('option');
+                            option.value = especialista.id;
+                            option.textContent = especialista.username;
+                            especialistaSelect.appendChild(option);
+                        });
+    
+                        // Habilita el campo de especialistas
+                        especialistaSelect.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error al obtener los especialistas:', error);
+                    });
+            }
+        }
+        function filtrarDisponibilidad() {
+            const especialistaId = document.getElementById('especialista').value;
+            const disponibilidadSelect = document.getElementById('disponibilidad');
+        
+            // Limpia las opciones actuales
+            disponibilidadSelect.innerHTML = '<option value="">-- Selecciona una disponibilidad --</option>';
+        
+            if (especialistaId) {
+                // Realiza una solicitud AJAX para obtener la disponibilidad
+                fetch(`/obtener_disponibilidad/${especialistaId}/`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error al obtener la disponibilidad.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.length > 0) {
+                            data.forEach(disponibilidad => {
+                                const option = document.createElement('option');
+                                option.value = disponibilidad.id;
+                                option.textContent = `${disponibilidad.fecha} (${disponibilidad.hora_inicio} - ${disponibilidad.hora_fin})`;
+                                disponibilidadSelect.appendChild(option);
+                            });
+                            disponibilidadSelect.disabled = false;
+                        } else {
+                            alert('No hay disponibilidad para este especialista.');
+                            disponibilidadSelect.disabled = true;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al obtener la disponibilidad:', error);
+                    });
+            } else {
+                disponibilidadSelect.disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>

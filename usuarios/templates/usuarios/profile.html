@@ -1,0 +1,305 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil del Usuario</title>
+    <link rel="icon" href="{% static 'img/icono.jpg' %}" type="image/x-icon">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/styles.css' %}"> {% endcomment %}
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #0e8030;
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            gap: 1.5rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: #005024;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 80px auto 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #0e8030;
+        }
+
+        /* Tablas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #ffffff;
+            table-layout: fixed;
+        }
+        
+        table thead {
+            background-color: #0e8030;
+            color: white;
+        }
+        
+        table th, table td {
+            padding: 15px; /* 🔹 Reducido de 12px a 8px para mejor proporción */
+            border: 1px solid #ddd;
+            text-align: center;
+            word-wrap: break-word;
+        }
+        
+        table th {
+            width: 16.6%;
+        }
+        table td:nth-child(6) { /* Acciones */
+            width: auto;
+            text-align: center;
+        }
+        
+        /* Ajustar ancho de las columnas clave */
+        table th:nth-child(1), table td:nth-child(1) { /* Especialista */
+            width: 15%;
+        }
+        table th:nth-child(2), table td:nth-child(2) { /* Fecha */
+            width: 12%;
+        }
+        table th:nth-child(3), table td:nth-child(3) { /* Hora */
+            width: 10%;
+        }
+
+        /* Botones */
+        .btn {
+            padding: 8px 12px;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn-cancel {
+            background-color: #d9534f;
+        }
+        
+        .btn-cancel:hover {
+            background-color: #c9302c;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0e8030;
+            color: white;
+            padding: 1px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'usuario' %}">Inicio</a></li>
+                <li><a href="{% url 'reservar_cita' %}">Reservar Turno</a></li>
+                <li>
+                    <a href="{% url 'mensajes_recibidos' %}" style="position: relative;">
+                        Mensajes
+                        {% if mensajes_no_leidos > 0 %}
+                            <span style="
+                                position: absolute;
+                                top: -5px;
+                                right: -10px;
+                                background-color: red;
+                                color: white;
+                                border-radius: 50%;
+                                padding: 2px 6px;
+                                font-size: 12px;
+                                font-weight: bold;
+                            ">
+                                {{ mensajes_no_leidos }}
+                            </span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li><a href="#" onclick="logout()">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>Perfil del Usuario</h2>
+            <div class="profile-info">
+                <p><strong>Nombre:</strong> {{ profile.user.username }}</p>
+                <p><strong>Email:</strong> {{ profile.user.email }}</p>
+                {% if profile.telefono %}
+                <p><strong>Teléfono:</strong> {{ profile.telefono }}</p>
+                {% endif %}
+            </div>
+    
+            <h3>Citas Pendientes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Especialista</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in citas_pendientes %}
+                    <tr>
+                        <td>{{ cita.especialista.username }}</td>
+                        <td>{{ cita.fecha_hora|date:"Y-m-d" }}</td>
+                        <td>{{ cita.fecha_hora|time:"H:i" }}</td>
+                        <td>{{ cita.descripcion|default:"Sin descripción" }}</td>
+                        <td>Pendiente de aprobación</td>
+                        <td>
+                            {% comment %} <a href="{% url 'editar_cita' cita.id %}" class="btn">Reprogramar</a> {% endcomment %}
+                            <a href="{% url 'cancelar_cita' cita.id %}" class="btn btn-cancel">Cancelar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No tienes citas pendientes.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    
+            <h3>Citas Aceptadas</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Especialista</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Especialidad</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in citas_aceptadas %}
+                    <tr>
+                        <td>{{ cita.especialista.username }}</td>
+                        <td>{{ cita.fecha_hora|date:"Y-m-d" }}</td>
+                        <td>{{ cita.fecha_hora|time:"H:i" }}</td>
+                        <td>{{ cita.especialidad.nombre }}</td>
+                        <td>{{ cita.descripcion|default:"-" }}</td>
+                        <td>
+                            <a href="{% url 'editar_cita' cita.id %}" class="btn">Reprogramar</a>
+                            <a href="{% url 'cancelar_cita' cita.id %}" class="btn btn-cancel">Cancelar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No tienes citas aceptadas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    
+            <h3>Citas Rechazadas</h3>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Especialista</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Descripción</th>
+                        <th>Motivo del Rechazo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in citas_rechazadas %}
+                    <tr>
+                        <td>{{ cita.especialista.username }}</td>
+                        <td>{{ cita.fecha_hora|date:"Y-m-d" }}</td>
+                        <td>{{ cita.fecha_hora|time:"H:i" }}</td>
+                        <td>{{ cita.descripcion|default:"-" }}</td>
+                        <td>{{ cita.motivo_rechazo|default:"No especificado" }}</td>
+                        <td>
+                            <a href="{% url 'editar_cita' cita.id %}" class="btn">Reprogramar</a>
+                            {% comment %} <a href="{% url 'cancelar_cita' cita.id %}" class="btn btn-cancel">Cancelar</a> {% endcomment %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No hay citas rechazadas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    
+
+    <footer>
+        <p>&copy; 2025 Hospital Provincial Dr. Antonio Luaces Iraola. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        function logout() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{% url "logout" %}';
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</body>
+</html>
